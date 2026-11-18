@@ -1,0 +1,83 @@
+<div class="sender">
+  {{.Seller.Name}}{{with .Seller.PostalAddress}} · {{.Line1}} · {{.PostcodeCode}} {{.City}}{{end}}
+</div>
+
+<table class="head">
+  <tr>
+    <td class="address" rowspan="5">
+      <b>{{.Buyer.Name}}</b><br>
+      {{with .Buyer.PostalAddress}}
+        {{.Line1}}<br>
+        {{if .Line2}}{{.Line2}}<br>{{end}}
+        {{.PostcodeCode}} {{.City}}<br>
+        {{.CountryID}}
+      {{end}}
+    </td>
+    <td class="label">Rechnungsnr.</td><td class="r">{{.InvoiceNumber}}</td>
+  </tr>
+  <tr><td class="label">Rechnungsdatum</td><td class="r">{{date .InvoiceDate}}</td></tr>
+  <tr><td class="label">{{if not .OccurrenceDateTime.IsZero}}Leistungsdatum{{end}}</td><td class="r">{{if not .OccurrenceDateTime.IsZero}}{{date .OccurrenceDateTime}}{{end}}</td></tr>
+  <tr><td class="label">Ihre Referenz</td><td class="r">{{.BuyerReference}}</td></tr>
+  <tr><td class="label">{{if .Buyer.VATaxRegistration}}Ihre USt-IdNr.{{end}}</td><td class="r">{{.Buyer.VATaxRegistration}}</td></tr>
+</table>
+
+<h1>Rechnung {{.InvoiceNumber}}</h1>
+
+{{range .Notes}}<p>{{.Text}}</p>{{end}}
+
+<table class="lines">
+  <thead>
+    <tr>
+      <th>Pos.</th>
+      <th>Bezeichnung</th>
+      <th class="r">Menge</th>
+      <th class="r">Einzelpreis</th>
+      <th class="r">USt.</th>
+      <th class="r">Betrag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .InvoiceLines}}
+    <tr>
+      <td>{{.LineID}}</td>
+      <td>{{.ItemName}}{{if .Description}}<br><span class="small">{{.Description}}</span>{{end}}</td>
+      <td class="r">{{qty .BilledQuantity}}</td>
+      <td class="r">{{money .NetPrice}}</td>
+      <td class="r">{{pct .TaxRateApplicablePercent}}</td>
+      <td class="r">{{money .Total}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr><td class="spacer"></td><td>Summe netto</td><td class="r">{{money .TaxBasisTotal}} {{.InvoiceCurrencyCode}}</td></tr>
+  {{range .TradeTaxes}}
+  <tr><td class="spacer"></td><td>USt. {{pct .Percent}} auf {{money .BasisAmount}}</td><td class="r">{{money .CalculatedAmount}} {{$.InvoiceCurrencyCode}}</td></tr>
+  {{end}}
+  <tr class="grand"><td class="spacer"></td><td>Rechnungsbetrag</td><td class="r">{{money .GrandTotal}} {{.InvoiceCurrencyCode}}</td></tr>
+  {{if not .TotalPrepaid.IsZero}}
+  <tr><td class="spacer"></td><td>Bereits bezahlt</td><td class="r">{{money .TotalPrepaid}} {{.InvoiceCurrencyCode}}</td></tr>
+  <tr class="grand"><td class="spacer"></td><td>Zahlbetrag</td><td class="r">{{money .DuePayableAmount}} {{.InvoiceCurrencyCode}}</td></tr>
+  {{end}}
+</table>
+
+{{range .SpecifiedTradePaymentTerms}}
+<p>Bitte überweisen Sie den Betrag{{if not .DueDate.IsZero}} bis zum <b>{{date .DueDate}}</b>{{end}} unter Angabe der Rechnungsnummer.{{if .Description}} {{.Description}}{{end}}</p>
+{{end}}
+
+{{range .PaymentMeans}}
+<table class="bank">
+  {{if .PayeePartyCreditorFinancialAccountName}}<tr><td>Kontoinhaber</td><td>{{.PayeePartyCreditorFinancialAccountName}}</td></tr>{{end}}
+  <tr><td>IBAN</td><td>{{.PayeePartyCreditorFinancialAccountIBAN}}</td></tr>
+  {{if .PayeeSpecifiedCreditorFinancialInstitutionBIC}}<tr><td>BIC</td><td>{{.PayeeSpecifiedCreditorFinancialInstitutionBIC}}</td></tr>{{end}}
+  {{if $.PaymentReference}}<tr><td>Verwendungszweck</td><td>{{$.PaymentReference}}</td></tr>{{end}}
+</table>
+{{end}}
+
+<div class="footer">
+  {{.Seller.Name}}{{with .Seller.PostalAddress}} · {{.Line1}} · {{.PostcodeCode}} {{.City}}{{end}}<br>
+  {{range .Seller.DefinedTradeContact}}{{.PersonName}} · Tel. {{.PhoneNumber}} · {{.EMail}}<br>{{end}}
+  {{if .Seller.VATaxRegistration}}USt-IdNr. {{.Seller.VATaxRegistration}}{{end}}
+  {{if .Seller.FCTaxRegistration}} · Steuernr. {{.Seller.FCTaxRegistration}}{{end}}
+</div>

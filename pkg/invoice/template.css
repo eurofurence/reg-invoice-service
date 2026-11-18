@@ -1,0 +1,73 @@
+@page {
+  size: A4;
+  margin: 2cm 2cm 2.5cm 2.5cm;
+}
+
+body {
+  font-family: sans;
+  font-size: 10pt;
+  line-height: 1.35;
+  color: #222;
+}
+
+h1 {
+  font-size: 15pt;
+  margin-top: 1.2cm;
+  margin-bottom: 0.4cm;
+}
+
+.r { text-align: right; }
+.small { font-size: 8.5pt; color: #555; }
+
+.sender {
+  font-size: 7.5pt;
+  color: #666;
+  border-bottom: 0.5pt solid #999;
+  margin-bottom: 0.3cm;
+}
+
+table.head { width: 100%; }
+table.head td { vertical-align: top; padding: 1pt 0; }
+td.address { width: 55%; }
+td.label { width: 22%; }
+
+table.lines {
+  width: 100%;
+  margin-top: 0.4cm;
+  border-collapse: collapse;
+}
+table.lines th {
+  text-align: left;
+  border-bottom: 1pt solid #222;
+  padding: 3pt 4pt;
+  font-weight: bold;
+}
+table.lines th.r { text-align: right; }
+table.lines td {
+  border-bottom: 0.5pt solid #ccc;
+  padding: 4pt 4pt;
+  vertical-align: top;
+}
+
+table.totals {
+  width: 100%;
+  margin-top: 0.3cm;
+  border-collapse: collapse;
+}
+table.totals td { padding: 2pt 4pt; }
+table.totals td.spacer { width: 45%; }
+table.totals tr.grand td:not(.spacer) {
+  font-weight: bold;
+  border-top: 1pt solid #222;
+}
+
+table.bank { margin-top: 0.2cm; }
+table.bank td { padding: 1pt 12pt 1pt 0; }
+
+.footer {
+  margin-top: 1.5cm;
+  padding-top: 0.2cm;
+  border-top: 0.5pt solid #999;
+  font-size: 7.5pt;
+  color: #666;
+}
